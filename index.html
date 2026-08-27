@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#14213d" />
+    <title>研究室カレンダー</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="dashboard">
+      <header class="topbar">
+        <section class="calendar-heading">
+          <p class="app-label">LABORATORY SCHEDULE</p>
+          <div class="month-navigation">
+            <button id="previousMonth" class="icon-button" type="button" aria-label="前の月">‹</button>
+            <h1 id="monthTitle">----年 --月</h1>
+            <button id="nextMonth" class="icon-button" type="button" aria-label="次の月">›</button>
+          </div>
+          <div class="display-actions">
+            <button id="todayButton" class="secondary-button" type="button">今月</button>
+            <button id="busTimetableButton" class="bus-button" type="button">バス時刻表</button>
+            <button id="themeButton" class="secondary-button" type="button" aria-pressed="false">ダークモード</button>
+            <button id="fullscreenButton" class="secondary-button" type="button">全画面</button>
+          </div>
+          <div class="topbar-actions">
+            <span id="currentUser" class="current-user" hidden></span>
+            <button id="adminButton" class="secondary-button" type="button" hidden>ユーザー承認</button>
+            <button id="authButton" class="secondary-button" type="button">ログイン / 新規登録</button>
+            <button id="logoutButton" class="secondary-button" type="button" hidden>ログアウト</button>
+          </div>
+        </section>
+
+        <section class="clock-panel" aria-label="現在時刻">
+          <div id="analogClock" class="analog-clock" role="img" aria-label="アナログ時計">
+            <span class="clock-number number-12">12</span>
+            <span class="clock-number number-3">3</span>
+            <span class="clock-number number-6">6</span>
+            <span class="clock-number number-9">9</span>
+            <span id="hourHand" class="clock-hand hour-hand"></span>
+            <span id="minuteHand" class="clock-hand minute-hand"></span>
+            <span id="secondHand" class="clock-hand second-hand"></span>
+            <span class="clock-center"></span>
+          </div>
+          <div class="clock-caption">
+            <time id="clock" class="digital-time" datetime="">--:--</time>
+            <p id="todayLabel" class="today-label"></p>
+          </div>
+        </section>
+      </header>
+
+      <section class="next-bus-panel" aria-labelledby="nextBusHeading">
+        <header class="next-bus-heading">
+          <div>
+            <p class="app-label">NEXT BUS</p>
+            <h2 id="nextBusHeading">次のバス</h2>
+          </div>
+          <div class="bus-direction-switch" role="group" aria-label="バスの方向">
+            <button class="active" type="button" data-direction="inbound">大学発</button>
+            <button type="button" data-direction="outbound">大学行き</button>
+          </div>
+        </header>
+        <div id="nextBusList" class="next-bus-list" aria-live="polite"></div>
+        <button id="openFullTimetable" class="timetable-link-button" type="button">全時刻表を見る →</button>
+      </section>
+
+      <section class="calendar-card" aria-label="月間カレンダー">
+        <div class="weekdays" aria-hidden="true">
+          <span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span class="saturday">土</span><span class="sunday">日</span>
+        </div>
+        <div id="calendarGrid" class="calendar-grid"></div>
+      </section>
+    </main>
+
+    <dialog id="eventDialog" class="event-dialog">
+      <form id="eventForm" method="dialog">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">予定を入力</p>
+            <h2 id="dialogTitle">予定の追加</h2>
+          </div>
+          <button id="closeDialog" class="close-button" type="button" aria-label="閉じる">×</button>
+        </div>
+
+        <input id="eventId" type="hidden" />
+        <label>日付<input id="eventDate" type="date" required /></label>
+        <label>開始時刻<input id="eventTime" type="time" /></label>
+        <label>予定<input id="eventTitle" type="text" maxlength="50" placeholder="例：ゼミ・実験・来客" required /></label>
+        <label>メモ<textarea id="eventNote" maxlength="200" rows="3" placeholder="必要に応じて入力"></textarea></label>
+
+        <div class="dialog-actions">
+          <button id="deleteEvent" class="danger-button" type="button">削除</button>
+          <span class="action-spacer"></span>
+          <button id="cancelDialog" class="secondary-button" type="button">キャンセル</button>
+          <button class="primary-button" type="submit">保存</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="authDialog" class="event-dialog auth-dialog">
+      <form id="authForm" novalidate>
+        <div class="dialog-heading">
+          <div><p class="eyebrow">ACCOUNT</p><h2 id="authDialogTitle">ログイン</h2></div>
+          <button id="closeAuthDialog" class="close-button" type="button" aria-label="閉じる">×</button>
+        </div>
+        <p id="authHelp" class="dialog-help">承認済みアカウントでログインしてください。</p>
+        <label>ユーザー名<input id="authUsername" autocomplete="username" minlength="3" maxlength="32" required /></label>
+        <label>パスワード<input id="authPassword" type="password" autocomplete="current-password" minlength="8" maxlength="256" required /></label>
+        <p id="authMessage" class="form-message" aria-live="polite"></p>
+        <div class="dialog-actions">
+          <button id="toggleSignup" class="secondary-button" type="button">アカウントを申請</button>
+          <span class="action-spacer"></span><button id="submitAuth" class="primary-button" type="submit">ログイン</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="adminDialog" class="event-dialog admin-dialog">
+      <section class="admin-dialog-content">
+        <div class="dialog-heading"><div><p class="eyebrow">ADMINISTRATION</p><h2>ユーザー承認</h2></div><button id="closeAdminDialog" class="close-button" type="button" aria-label="閉じる">×</button></div>
+        <p id="adminMessage" class="form-message" aria-live="polite"></p>
+        <div class="user-table-wrap"><table><thead><tr><th>ユーザー名</th><th>申請日時</th><th>状態</th><th>操作</th></tr></thead><tbody id="userList"></tbody></table></div>
+      </section>
+    </dialog>
+
+    <dialog id="busDialog" class="bus-dialog">
+      <div class="bus-dialog-layout">
+        <header class="bus-dialog-header">
+          <div>
+            <p class="eyebrow">PORTFOLIO DEMO</p>
+            <h2>バス時刻表</h2>
+            <p id="busServiceNotice" class="bus-service-notice"></p>
+          </div>
+          <button id="closeBusDialog" class="close-button" type="button" aria-label="閉じる">×</button>
+        </header>
+
+        <nav class="timetable-tabs" aria-label="表示する時刻表">
+          <button class="timetable-tab active" type="button" data-timetable="yamashina">デモ路線A<br><small>中央駅 ⇄ 大学</small></button>
+          <button class="timetable-tab" type="button" data-timetable="kyoto">デモ路線B<br><small>北駅 ⇄ 大学</small></button>
+          <button class="timetable-tab" type="button" data-timetable="shuttle">デモシャトル<br><small>交流館 ⇄ 大学</small></button>
+          <button class="timetable-tab" type="button" data-timetable="summer">デモ臨時便<br><small>交流館 ⇄ 大学</small></button>
+        </nav>
+
+        <section class="timetable-viewer">
+          <header class="local-timetable-heading">
+            <div><h3 id="localTimetableTitle"></h3><p id="localTimetableMeta"></p></div>
+            <div id="scheduleSelector" class="schedule-selector"></div>
+          </header>
+          <div id="localTimetable" class="local-timetable"></div>
+          <div class="timetable-legend">
+            <span><i class="legend-dot direct"></i>直通・大学発着</span>
+            <span><i class="legend-dot ooyake"></i>大宅中学校発着</span>
+            <span><i class="legend-dot suspended"></i>学休期運休</span>
+            <span><i class="legend-dot break-only"></i>学休期のみ</span>
+          </div>
+        </section>
+
+        <footer class="bus-dialog-footer">
+          <span>公開版は合成デモ時刻です。実際の移動には使用できません。</span>
+          <span>非公式ポートフォリオ作品</span>
+        </footer>
+      </div>
+    </dialog>
+
+    <script src="timetable-data.js" defer></script>
+    <script src="timetable-periods.js" defer></script>
+    <script src="app.js" defer></script>
+  </body>
+</html>
