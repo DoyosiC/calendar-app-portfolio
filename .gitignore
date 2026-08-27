@@ -1,0 +1,16 @@
+# Runtime data and local security settings
+data/
+
+# Python and editor-generated files
+__pycache__/
+*.py[cod]
+.DS_Store
+.vscode/
+.idea/
++
++# Internal-only planning and operational documents
++CURRENT_STATUS.md
++agent_instruction.md
++*.local.*
++screenshots-private/
++
