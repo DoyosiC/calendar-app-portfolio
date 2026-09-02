@@ -7,10 +7,9 @@ __pycache__/
 .DS_Store
 .vscode/
 .idea/
-+
-+# Internal-only planning and operational documents
-+CURRENT_STATUS.md
-+agent_instruction.md
-+*.local.*
-+screenshots-private/
-+
+
+# Internal-only planning and operational documents
+CURRENT_STATUS.md
+agent_instruction.md
+*.local.*
+screenshots-private/
