@@ -1,5 +1,7 @@
 # Laboratory Calendar
 
+[![Portfolio checks](https://github.com/DoyosiC/calendar-app-portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/DoyosiC/calendar-app-portfolio/actions/workflows/ci.yml)
+
 > **Portfolio / demonstration repository**  
 > This is an independently developed, unofficial project. It is not an official product of any university, bus operator, or commercial facility. The timetable included in this public repository is synthetic demo data and must not be used for travel.
 
@@ -131,6 +133,12 @@ Python 3があれば追加パッケージなしで実行できます。
 予定の追加・更新・削除には承認済みユーザー、管理APIには管理者のセッションが必要です。
 
 ## テスト
+
+GitHub Actionsでも以下のチェックを実行します。
+
+- Python構文チェック
+- 回帰テスト
+- JavaScript構文チェック
 
 ```bash
 python3 -m py_compile server.py
