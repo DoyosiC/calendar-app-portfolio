@@ -1,7 +1,5 @@
 # Laboratory Calendar
 
-[![Portfolio checks](https://github.com/DoyosiC/calendar-app-portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/DoyosiC/calendar-app-portfolio/actions/workflows/ci.yml)
-
 > **Portfolio / demonstration repository**  
 > This is an independently developed, unofficial project. It is not an official product of any university, bus operator, or commercial facility. The timetable included in this public repository is synthetic demo data and must not be used for travel.
 
